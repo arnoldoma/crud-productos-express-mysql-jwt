@@ -1,5 +1,6 @@
 <%- include('partials/header'); %>
 <%- include('partials/navbar'); %>
+
 <div class="container mt-5">
 
         <div class="row">
@@ -8,7 +9,7 @@
 
                 <a href="/products/add" class="btn btn-success mb-2">Nuevo producto</a>
 
-                <table class="table table-bordered table-hover">
+                <table class="table table-bordered table-hover text-center">
                     <thead class="thead-dark">
                         <tr>
                             <th>ID</th>
@@ -20,7 +21,7 @@
                     </thead>
                     <tbody>
                         <% products.forEach(prod=> { %>
-                            <tr>
+                            <tr class="align-center">
                                 <td>
                                     <%= prod.id %>
                                 </td>
@@ -29,7 +30,7 @@
                                 </td>
                                 <td class="text-center">
                                     <img src="<%= prod.urlImagen %>" alt="<%= prod.nombre %>" class="rounded"
-                                        width="40">
+                                        width="30">
                                 </td>
                                 <td class="text-center">
                                     <%= prod.precio %>

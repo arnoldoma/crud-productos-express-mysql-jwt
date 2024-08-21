@@ -5,7 +5,7 @@ const router = Router()
 
 
 router.get('/', authController.isAuthenticated, (req, res)=>{
-    res.render('index', {alert:false, user:req.user})
+    res.render('index', { title:"Dashboard", alert:false, user:req.user})
 })
 
 router.get('/login', (req, res)=>{

@@ -1,0 +1,11 @@
+<div
+class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-2 pb-2 mb-1 border-bottom">
+<h2><%= title %></h2>
+<div class="nav-item d-flex align-items-center text-nowrap">
+    <% if (user) { %>
+        Bienvenido: <span class="badge bg-success">
+            <%= user.nombre %>
+        </span>
+        <% } %>
+    </div>
+</div>

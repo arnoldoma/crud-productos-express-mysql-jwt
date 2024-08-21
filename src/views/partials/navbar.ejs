@@ -1,21 +1,19 @@
-    <header class="navbar navbar-dark sticky-top bg-primary flex-md-nowrap p-0 shadow">
-        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="/"> <img src="/products/imgdefault.png" width="30" height="30" class="d-inline-block align-top" alt=""> Fixma E R P</a>
+        <header class="navbar navbar-dark sticky-top bg-primary flex-md-nowrap p-0 shadow">
+            <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="/"> <img src="/products/imgdefault.png" width="30"
+                    height="30" class="d-inline-block align-top" alt=""> Fixma E R P</a>
 
-        <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
-            data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false"
-            aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="d-flex ">
-            <div class="nav-item d-flex align-items-center text-nowrap">
-                <% if (user) { %>
-                    Bienvenido:  <span class="badge bg-success">
-                        <%= user.nombre %>
-                    </span>
-                    <% } %>
+            <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
+                data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="d-flex ">
+                <div class="nav-item text-nowrap">
+                    <a class="px-3 btn" href="/products">Productos</a>
+                </div>
+
+                <div class="nav-item text-nowrap">
+                    <a type="button" class="px-3 btn" href="/logout">Salir</a>
+                </div>
             </div>
-            <div class="nav-item text-nowrap">
-                <a type="button" class="px-3 btn" href="logout">Salir</a>
-            </div>
-        </div>
-    </header>
+        </header>

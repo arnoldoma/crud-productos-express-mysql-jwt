@@ -11,7 +11,7 @@ controller.list = async (req, res) => {
     try {
         const connection = await db.getConnection();
         // const [[products]] = await connection.query("call carrito.prc_products();");
-        const [products] = await connection.query("SELECT * from producto");
+        const [products] = await connection.query("SELECT * from producto order by id desc");
         if (products.length === 0) {
             res.render('products', {
                 alert: true,
@@ -24,7 +24,7 @@ controller.list = async (req, res) => {
             })
         }else{
             res.render('products',
-                {user:req.user, alert:false,products: products, msg:{
+                {title:"Productos", user:req.user, alert:false,products: products, msg:{
                 alert: true,
                 alertTitle: "Bienvenido",
                 alertMessage: "Listado de producto",
