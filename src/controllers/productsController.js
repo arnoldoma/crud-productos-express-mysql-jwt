@@ -2,7 +2,7 @@
 const multer = require('multer')
 const path = require('path')
 const db = require('../database/db');
-const {unlink} = require('fs-extra');
+const { unlink } = require('fs-extra');
 const { url } = require('inspector');
 
 const controller = {};
@@ -13,51 +13,57 @@ controller.list = async (req, res) => {
         // const [[products]] = await connection.query("call carrito.prc_products();");
         const [products] = await connection.query("SELECT * from producto order by id desc");
         if (products.length === 0) {
-            res.render('products', {
+            res.render('products', {title: "Productos", user: req.user, alert: false, products: products,msg:{
                 alert: true,
                 alertTitle: "Error en la consulta",
                 alertMessage: "No se encontro el listado de productos",
                 alertIcon: 'error',
                 showConfirmButton: true,
                 timer: false,
-                ruta: 'products'
-            })
-        }else{
-            res.render('products',
-                {title:"Productos", user:req.user, alert:false,products: products, msg:{
-                alert: true,
-                alertTitle: "Bienvenido",
-                alertMessage: "Listado de producto",
-                alertIcon: 'success',
-                showConfirmButton: false,
-                timer: 1000,
-                ruta: 'products'
+                ruta: ''
             }})
-            // res.render('products', 
-            //     { user: req.user, alert:false, products: products },
-            //     {
-            //     alert: true,
-            //     alertTitle: "Bienvenido",
-            //     alertMessage: "Listado de producto",
-            //     alertIcon: 'success',
-            //     showConfirmButton: false,
-            //     timer: 1000,
-            //     ruta: ''
-            // } )
+        } else {
+            res.render('products',
+                {
+                    title: "Productos", user: req.user, alert: false, products: products, msg: {
+                        alert: true,
+                        alertTitle: "Bienvenido",
+                        alertMessage: "Listado de producto",
+                        alertIcon: 'success',
+                        showConfirmButton: false,
+                        timer: 1000,
+                        ruta: 'products'
+                    }
+                })
         }
-        
+
     } catch (error) {
-        res.status(500).json({ message: error.message })
+        // res.status(500).json({ message: error.message })
+        res.render('products', {
+            alert: true,
+            alertTitle: "Error",
+            alertMessage: error.message,
+            alertIcon: 'error',
+            showConfirmButton: true,
+            timer: false,
+            ruta: 'products'
+        })
     }
 }
 
 controller.save = async (req, res) => {
     let ulrImg = '';
     const { nombre, precio } = req.body
-    if (!req.file) {ulrImg = 'imgdefault.png' }else{ ulrImg = req.file.filename }
+    if (!req.file) { ulrImg = 'imgdefault.png' } else { ulrImg = req.file.filename }
     if (!nombre || !precio) {
-        return res.json({
-            message: 'No hay datos'
+        res.render('products_add', {
+            alert: true,
+            alertTitle: "Error",
+            alertMessage: "Todos los campos son obligatorios.",
+            alertIcon: 'error',
+            showConfirmButton: true,
+            timer: false,
+            ruta: 'products'
         })
     }
     const data = {
@@ -69,13 +75,28 @@ controller.save = async (req, res) => {
     try {
         const connection = await db.getConnection();
         await connection.query('INSERT INTO producto set ?', [data])
-        // res.json({
-        //     message:'Producto guadado exitosamente!'
-        // })
-        res.redirect('/products')
+        res.render('products_add', {
+            alert: true,
+            alertTitle: "Registro Exitoso",
+            alertMessage: "Producto registrado exitosamente.",
+            alertIcon: 'success',
+            showConfirmButton: false,
+            timer: 1000,
+            ruta: 'products'
+        })
+        // res.redirect('/products')
 
     } catch (error) {
-        res.status(500).json({ message: error.message })
+        // res.status(500).json({ message: error.message })
+        res.render('products_add', {
+            alert: true,
+            alertTitle: "Error",
+            alertMessage: error.message,
+            alertIcon: 'error',
+            showConfirmButton: true,
+            timer: false,
+            ruta: 'products'
+        })
     }
 }
 
@@ -85,16 +106,38 @@ controller.edit = async (req, res) => {
         const connection = await db.getConnection();
         const [[product]] = await connection.query("SELECT * FROM producto WHERE id = ?", [id]);
         if (product.length === 0) {
-            return res.json({
-                message: 'El producto no fue encontrado'
+            return res.render('products_edit', {
+                    alert: true,
+                    alertTitle: "Error",
+                    alertMessage: "Error al actualizar el producto!",
+                    alertIcon: 'error',
+                    showConfirmButton: true,
+                    timer: false,
+                    ruta: 'products'
             })
         }
         // res.json(product)
-        res.render('products_edit', { user: req.user, alert:false, product: product })
+        res.render('products_edit', {
+            user: req.user, alert: false, product: product, msg: {
+                alert: true,
+                alertTitle: "Producto actualizado",
+                alertMessage: "Producto actualizado exitosamente.",
+                alertIcon: 'success',
+                showConfirmButton: false,
+                timer: 1000,
+                ruta: 'products'
+            }
+        })
 
     } catch (error) {
-        return res.status(500).json({
-            message: error.message
+        res.render('products_edit', {
+            alert: true,
+            alertTitle: "Error",
+            alertMessage: error.message,
+            alertIcon: 'error',
+            showConfirmButton: true,
+            timer: false,
+            ruta: 'products'
         })
     }
 }
@@ -108,33 +151,48 @@ controller.update = async (req, res) => {
         return res.json({
             message: 'No hay datos'
         })
-    }  
+    }
 
     if (!req.file) {
         data = {
             nombre,
             precio
         }
-    }else{ 
+    } else {
         data = {
-        nombre,
-        urlImagen: req.file.filename,
-        precio}
-     }
-  
-    try {        
+            nombre,
+            urlImagen: req.file.filename,
+            precio
+        }
+    }
+
+    try {
         const connection = await db.getConnection();
         const product = await connection.query("UPDATE producto SET ? WHERE id = ?", [data, id]);
 
-        // if (product.affectedRows === 0) {
-        //     return res.json({
-        //         message: 'El producto no se pudo actualizar correctamente'
-        //     })
-        // }
-        // res.json({
-        //     message: `El producto fue actualizado correctamente.`
-        // });
-        res.redirect('/products')
+        if (product.affectedRows === 0) {
+            return res.render('products_edit', {
+                    alert: true,
+                    alertTitle: "Error",
+                    alertMessage: "Error al actualizar el producto!",
+                    alertIcon: 'error',
+                    showConfirmButton: true,
+                    timer: false,
+                    ruta: 'products'
+                
+            })
+        }
+        res.render('products_edit', {
+            product:product,
+            alert: true,
+            alertTitle: "Actualizacion Exitosa",
+            alertMessage: "Producto actualizado exitosamente.",
+            alertIcon: 'success',
+            showConfirmButton: false,
+            timer: 1000,
+            ruta: 'products'
+        })
+        // res.redirect('/products')
     } catch (error) {
         res.status(400).json({
             message: error.message
@@ -155,10 +213,17 @@ controller.delete = async (req, res) => {
                 message: 'Error al eliminar el producto'
             })
         }
-        unlink(path.resolve('src/uploads/products/'+product.urlImagen))
-        // res.json({
-        //     message: `El producto fue eliminado correctamente.`
-        // });
+        unlink(path.resolve('src/uploads/products/' + product.urlImagen))
+        // res.render('products', {
+        //     product:product,
+        //     alert: true,
+        //     alertTitle: "Eliminacion Exitosa",
+        //     alertMessage: "Producto eliminado exitosamente.",
+        //     alertIcon: 'success',
+        //     showConfirmButton: false,
+        //     timer: 1000,
+        //     ruta: 'products'
+        // })
         res.redirect('/products')
 
     } catch (error) {

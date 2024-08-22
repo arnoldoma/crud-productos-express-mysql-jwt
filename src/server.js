@@ -10,7 +10,7 @@ const routerProducts = require('./router/products')
 const app = express()
 
 //Settings
-app.set('port', process.env.DB_PORT || 4000);
+app.set('port', process.env.PORT || 4000);
 app.set('host','http://127.0.0.1')
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname,'views'))
@@ -27,7 +27,6 @@ app.use(express.static('src/uploads/'))
 //Seteamos la carpeta para variables de entorno
 // dotenv.config({path: 'env/.env'})
 dotenv.config()
-
 
 // Para poder trabajar con cookies
 app.use(cookieParser())

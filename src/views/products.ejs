@@ -1,67 +1,76 @@
 <%- include('partials/header'); %>
-<%- include('partials/navbar'); %>
+    <%- include('partials/navbar'); %>
 
-<div class="container mt-5">
+        <div class="container mt-5">
 
-        <div class="row">
-            <div class="col-md-12">
-                <h2 class="text-center mt-3">Listado de productos</h2>
+            <div class="row">
+                <div class="col-md-12">
+                    <h2 class="text-center mt-3">Listado de productos</h2>
 
-                <a href="/products/add" class="btn btn-success mb-2">Nuevo producto</a>
+                    <a href="/products/add" class="btn btn-success mb-2">Nuevo producto</a>
 
-                <table class="table table-bordered table-hover text-center">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th>ID</th>
-                            <th>Nombre</th>
-                            <th>Imagen</th>
-                            <th>Precio</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% products.forEach(prod=> { %>
-                            <tr class="align-center">
-                                <td>
-                                    <%= prod.id %>
-                                </td>
-                                <td>
-                                    <%= prod.nombre %>
-                                </td>
-                                <td class="text-center">
-                                    <img src="<%= prod.urlImagen %>" alt="<%= prod.nombre %>" class="rounded"
-                                        width="30">
-                                </td>
-                                <td class="text-center">
-                                    <%= prod.precio %>
-                                </td>
-                                <td class="text-center">
-                                    <a href="/products/edit/<%= prod.id %>" class="btn btn-info">Edit</a>
-                                    <a href="/products/delete/<%= prod.id %>" class="btn btn-danger">Delete</a>
-                                </td>
+                    <table class="table table-bordered table-hover text-center">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Imagen</th>
+                                <th>Precio</th>
+                                <th>Acciones</th>
                             </tr>
-                            <% }) %>
+                        </thead>
+                        <tbody>
+                            <% if(products && products.length>0) { %>
+                                <% products.forEach(prod=> { %>
+                                <tr class="align-center">
+                                    <td>
+                                        <%= prod.id %>
+                                    </td>
+                                    <td>
+                                        <%= prod.nombre %>
+                                    </td>
+                                    <td class="text-center">
+                                        <img src="<%= prod.urlImagen %>" alt="<%= prod.nombre %>" class="rounded"
+                                            width="30">
+                                    </td>
+                                    <td class="text-center">
+                                        <%= prod.precio %>
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="/products/edit/<%= prod.id %>" class="btn btn-info">Edit</a>
+                                        <a href="/products/delete/<%= prod.id %>" class="btn btn-danger">Delete</a>
+                                    </td>
+                                </tr>
+                                <% }) %>
+                                    <% }else{ %>
+                                        <tr>
 
-                    </tbody>
-                </table>
+                                            <td colspan="5" class="text-center">
+                                                No hay productos
+                                            </td>
+                                        </tr>
+                                        <% } %>
+
+                        </tbody>
+                    </table>
+                </div>
             </div>
+
         </div>
 
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<% if(alert) { %>
-        <script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <% if(alert) { %>
+            <script>
                 Swal.fire({
-                        title: '<%= alertTitle %>',
-                        text: '<%= alertMessage %>',
-                        icon: '<%= alertIcon %>',
-                        showConfirmButton: <%= showConfirmButton %>,
-                        timer: <%= timer %>,
+                    title: '<%= alertTitle %>',
+                    text: '<%= alertMessage %>',
+                    icon: '<%= alertIcon %>',
+                    showConfirmButton: <%= showConfirmButton %>,
+                    timer: <%= timer %>,
         }).then(() => {
-                                window.location = '/<%= ruta %>'
-                        })
-        </script>
-        <% } %>
-        
-    <%- include('partials/footer'); %>
+                        window.location = '/<%= ruta %>'
+                    })
+            </script>
+            <% } %>
+
+                <%- include('partials/footer'); %>

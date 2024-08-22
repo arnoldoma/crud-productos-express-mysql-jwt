@@ -12,7 +12,7 @@ router.get('/login', (req, res)=>{
     res.render('login', {alert:false})
 })
 router.get('/register', (req, res)=>{
-    res.render('register')
+    res.render('register', {alert:false})
 })
 
 // Apis

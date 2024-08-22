@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcryptjs = require('bcryptjs');
 const db = require('../database/db');
-const {promisify} = require('util');
+const { promisify } = require('util');
 
 const authController = {};
 
@@ -10,21 +10,62 @@ authController.save = async (req, res) => {
     let passHash = await bcryptjs.hash(password, 8)
     // console.log( passHash );
     if (!nombre || !email || !password) {
-        return res.json({
-            message: 'Todos los campos son obligatorios'
+        res.render('register', {
+            alert: true,
+            alertTitle: "Error",
+            alertMessage: "Todos los campos son obligatorios.",
+            alertIcon: 'error',
+            showConfirmButton: true,
+            timer: false,
+            ruta: 'register'
         })
-    }
-    const data = {
-        nombre,
-        email,
-        password: passHash
-    }
-    try {
-        const connection = await db.getConnection()
-        await connection.query('INSERT INTO usuarios SET ?', [data])
-        res.redirect('/login')
-    } catch (error) {
-        res.json(error)
+    } else {
+        try {
+            const connection = await db.getConnection()
+            // Validar si ya existe usuario o email
+            const [[exist]] = await connection.query('SELECT email as exist from usuarios where email = ?', [email])
+            // return console.log( !!exist );
+            if (!!exist) {
+                res.render('register', {
+                    alert: true,
+                    alertTitle: "Registro erróneo",
+                    alertMessage: "Usuario ya se encuentra registrado.",
+                    alertIcon: 'error',
+                    showConfirmButton: true,
+                    timer: false,
+                    ruta: 'register'
+                })
+            } else {
+                const data = {
+                    nombre,
+                    email,
+                    password: passHash
+                }
+                // Registro
+                await connection.query('INSERT INTO usuarios SET ?', [data])
+                res.render('register', {
+                    alert: true,
+                    alertTitle: "Registro Exitoso",
+                    alertMessage: "Usuario registrado exitosamente.",
+                    alertIcon: 'success',
+                    showConfirmButton: false,
+                    timer: 1000,
+                    ruta: 'login'
+                })
+            }
+
+            // res.redirect('/login')
+        } catch (error) {
+            res.render('register', {
+                alert: true,
+                alertTitle: "Error",
+                alertMessage: error.message,
+                alertIcon: 'error',
+                showConfirmButton: true,
+                timer: false,
+                ruta: 'register'
+            })
+        }
     }
 
 }
@@ -71,11 +112,11 @@ authController.login = async (req, res) => {
                 }
 
                 res.cookie('jwt', token, cookiesOptions)
-      
+
                 res.render('login', {
                     alert: true,
                     alertTitle: "Bienvenido",
-                    alertMessage: "Bienvenido al sistema FIXMA",
+                    alertMessage: "Bienvenido al sistema",
                     alertIcon: 'success',
                     showConfirmButton: false,
                     timer: 1000,
@@ -85,29 +126,38 @@ authController.login = async (req, res) => {
 
         } catch (error) {
             console.log(error);
+            res.render('login', {
+                alert: true,
+                alertTitle: "Error",
+                alertMessage: error.message,
+                alertIcon: 'error',
+                showConfirmButton: true,
+                timer: false,
+                ruta: 'login'
+            })
         }
     }
 }
 
-authController.isAuthenticated = async(req, res, next)=>{
-    if (req.cookies.jwt){
+authController.isAuthenticated = async (req, res, next) => {
+    if (req.cookies.jwt) {
         try {
             const decoficated = await promisify(jwt.verify)(req.cookies.jwt, process.env.JWT_SECRET)
             const conn = await db.getConnection()
             const [[results]] = await conn.query("SELECT * FROM usuarios WHERE id = ?", [decoficated.id])
-            if(!results){return next()}
+            if (!results) { return next() }
             req.user = results
             return next()
         } catch (error) {
             console.log(error)
             return next()
         }
-    }else{
+    } else {
         res.redirect('/login')
     }
 }
 
-authController.logout = (req,res)=>{
+authController.logout = (req, res) => {
     res.clearCookie('jwt')
     return res.redirect('/login')
 }
