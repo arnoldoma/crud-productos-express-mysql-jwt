@@ -51,7 +51,7 @@ npm run start
 
 ## Construido con 🛠️
 
-_Menciona las herramientas que utilizaste para crear tu proyecto_
+_Herramientas que se utilizo para crear tu proyecto_
 
 * [Express](https://expressjs.com/) - El framework para el Back-End
 * [Bcyptjs](https://www.npmjs.com/package/bcryptjs) - Encriptador de Password y autenticacion 
