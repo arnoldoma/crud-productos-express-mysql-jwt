@@ -20,9 +20,9 @@ _Que cosas necesitas para instalar el software y como instalarlas_
 Debes realizar el clonado: 
 
 ```
-https://github.com/arnoldoma/crud-productos-express-mysql-jwt
+git clone https://github.com/arnoldoma/crud-productos-express-mysql-jwt
 ```
-Debes crear la base de datos en tu gestor de base de datos Mysql, utilizando el archivo .sql.
+Debes crear la base de datos en tu gestor de base de datos Mysql, utilizando el script de la base de datos.
 
 `db.sql`
 
